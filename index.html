@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pawfect Pets - Home</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <button id="back-to-top" class="btn back-to-top-btn">Back to Top</button>
+    <header>
+        <nav>
+            <div class="logo">
+                <img src="images/logo.png" alt="Pawfect Pets Logo" class="logo-img">
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#gallery">Gallery</a></li>
+                <li><a href="#store">Store</a></li>
+                <li><a href="#blog">Blog</a></li>
+                <li><a href="#testimonials">Testimonials</a></li>
+                <li><a href="#contact" class="btn book-now">Book Now</a></li>
+            </ul>
+            <div class="burger">
+                <div class="line1"></div>
+                <div class="line2"></div>
+                <div class="line3"></div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="home" class="hero">
+            <div class="video-container">
+                <video id="video1" class="hero-video" muted loop>
+                    <source src="videos/video1.mp4" type="video/mp4">
+                </video>
+                <video id="video2" class="hero-video" muted loop>
+                    <source src="videos/video2.mp4" type="video/mp4">
+                </video>
+                <video id="video3" class="hero-video" muted loop>
+                    <source src="videos/video3.mp4" type="video/mp4">
+                </video>
+            </div>
+            <div class="hero-content">
+                <h1>Welcome to Pawfect Pets</h1>
+                <p>Your pet's happiness is our priority.</p>
+                <a href="#store" class="btn">Shop Now</a>
+            </div>
+        </section>
+
+        <!-- Services Section -->
+        <section id="services" class="services">
+            <h2 class="section-title">Services</h2>
+            <div class="service-cards">
+                <!-- Veterinary Service -->
+                <div class="service-card">
+                    <img src="images/veterinary.jpg" alt="Veterinary">
+                    <h3>Veterinary</h3>
+                    <p>Quality healthcare for your pet</p>
+                    <a href="#" class="btn" data-modal-id="service1" data-section="service">Learn More</a>
+                </div>
+        
+                <!-- Grooming Service -->
+                <div class="service-card">
+                    <img src="images/grooming.jpg" alt="Grooming">
+                    <h3>Grooming</h3>
+                    <p>Pamper your pet with a grooming session</p>
+                    <a href="#" class="btn" data-modal-id="service2" data-section="service">Learn More</a>
+                </div>
+        
+                <!-- Training Service -->
+                <div class="service-card">
+                    <img src="images/training.jpg" alt="Training">
+                    <h3>Training</h3>
+                    <p>Train your pet to be their best</p>
+                    <a href="#" class="btn" data-modal-id="service3" data-section="service">Learn More</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gallery Section -->
+        <section id="gallery" class="gallery">
+            <h2 class="gallery-title">Gallery</h2>
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <figure>
+                        <img src="images/gallery1.jpg" alt="Photo of expert veterinary surgery for cats - Courtesy of Pawfect Pets, March 2024">
+                        <figcaption>Our expert veterinarians ensure your pet receives the highest standard of care, even during surgery.</figcaption>
+                    </figure>
+                </div>
+                <div class="gallery-item">
+                    <figure>
+                        <img src="images/gallery2.jpg" alt="Photo of a cat recovering comfortably in a care cage - Courtesy of Pawfect Pets, April 2024">
+                        <figcaption>Providing a calm and comfortable environment for pets during recovery is our priority.</figcaption>
+                    </figure>
+                </div>
+                <div class="gallery-item">
+                    <figure>
+                        <img src="images/gallery3.jpg" alt="Photo of a curious cat inspecting its surroundings - Courtesy of Pawfect Pets, May 2024">
+                        <figcaption>Explore our pet-friendly spaces that keep your furry friends curious and engaged.</figcaption>
+                    </figure>
+                </div>
+                <div class="gallery-item">
+                    <figure>
+                        <img src="images/gallery4.jpg" alt="Photo of professional dog grooming service - Courtesy of Pawfect Pets, June 2024">
+                        <figcaption>Trust our skilled groomers to give your pet the professional care they deserve.</figcaption>
+                    </figure>
+                </div>
+                <div class="gallery-item">
+                    <figure>
+                        <img src="images/gallery5.jpg" alt="Photo of a freshly groomed cat looking its best - Courtesy of Pawfect Pets, July 2024">
+                        <figcaption>Show off your pet’s best look with our premium grooming services.</figcaption>
+                    </figure>
+                </div>
+                <div class="gallery-item">
+                    <figure>
+                        <img src="images/gallery6.jpg" alt="Photo of a dog training session in a pool with tennis balls - Courtesy of Pawfect Pets, August 2024">
+                        <figcaption>Our innovative training sessions help dogs stay active and happy, even in water activities.</figcaption>
+                    </figure>
+                </div>
+            </div>
+            <div class="gallery-lightbox" id="gallery-lightbox">
+                <span class="close-lightbox">&times;</span>
+                <img class="lightbox-content" id="lightbox-img">
+                <div class="caption" id="caption"></div>
+            </div>
+        </section>
+
+        <!-- Store Section -->
+        <section id="store" class="store">
+            <h2 class="title">Store</h2>
+            <div class="product-grid">
+                <div class="product">
+                    <img src="images/product1.jpg" alt="Product 1">
+                    <h3>Premium Dog Food</h3>
+                    <p class="price">$29.99</p>
+                    <a href="store.html?product=product1" class="btn">Buy Now</a>
+                </div>
+                <div class="product">
+                    <img src="images/product2.jpg" alt="Product 2">
+                    <h3>Cat Toys Bundle</h3>
+                    <p class="price">$19.99</p>
+                    <a href="store.html?product=product2" class="btn">Buy Now</a>
+                </div>
+                <div class="product">
+                    <img src="images/product3.jpg" alt="Product 3">
+                    <h3>Pet Grooming Kit</h3>
+                    <p class="price">$39.99</p>
+                    <a href="store.html?product=product3" class="btn">Buy Now</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Blog Section -->
+        <section id="blog" class="blog">
+            <h2 class="title">Blog</h2>
+            <div class="blog-posts">
+                <!-- Blog Post 1 -->
+                <div class="blog-post">
+                    <div class="blog-card">
+                        <div class="blog-image">
+                            <img src="images/blog1.jpg" alt="Blog 1">
+                        </div>
+                        <div class="overlay">
+                            <h3>5 Tips for a Happy Pet</h3>
+                            <p>Learn how to keep your pet happy and healthy with these simple tips.</p>
+                            <button class="btn" data-section="blog" data-modal-id="blog1">Read More</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Blog Post 2 -->
+                <div class="blog-post">
+                    <div class="blog-card">
+                        <div class="blog-image">
+                            <img src="images/blog2.jpg" alt="Blog 2">
+                        </div>
+                        <div class="overlay">
+                            <h3>The Best Pet Grooming Tools</h3>
+                            <p>Discover the top grooming tools every pet owner should have.</p>
+                            <button class="btn" data-section="blog" data-modal-id="blog2">Read More</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Blog Post 3 -->
+                <div class="blog-post">
+                    <div class="blog-card">
+                        <div class="blog-image">
+                            <img src="images/blog3.jpg" alt="Blog 3">
+                        </div>
+                        <div class="overlay">
+                            <h3>Training Your Puppy at Home</h3>
+                            <p>A step-by-step guide to training your puppy at home.</p>
+                            <button class="btn" data-section="blog" data-modal-id="blog3">Read More</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+<!-- Testimonials Section -->
+<section id="testimonials" class="testimonials">
+    <h2 class="title">Client Testimonials</h2>
+    <div class="testimonial-carousel">
+        <div class="testimonial active">
+            <p>"Pawfect Pets has been a lifesaver for my furry family! Their team is incredibly caring and professional. My dog, Max, loves his visits and always comes home happy and tired. Highly recommend!"</p>
+            <span>- Sarah M.</span>
+        </div>
+        <div class="testimonial">
+            <p>"I was nervous about leaving my cat, Whiskers, while I was away, but Pawfect Pets put my mind at ease. They provided regular updates and photos, and Whiskers seemed perfectly content when I returned. Thank you!"</p>
+            <span>- John L.</span>
+        </div>
+        <div class="testimonial">
+            <p>"Pawfect Pets is simply the best! They took such great care of my two dogs and even sent me cute pictures of them playing. It’s clear they truly love animals. I wouldn’t trust anyone else with my pets!"</p>
+            <span>- Emily R.</span>
+        </div>
+        <div class="testimonial">
+            <p>"I’ve tried other pet care services, but Pawfect Pets stands out. They are reliable, attentive, and my dog, Buddy, adores them. They even helped with training tips! Best decision ever!"</p>
+            <span>- Michael T.</span>
+        </div>
+        <div class="testimonial">
+            <p>"Pawfect Pets made my vacation stress-free! They took care of my parrot, Sunny, with so much love and attention. I came back to a happy bird and a detailed report of his activities. Thank you so much!"</p>
+            <span>- Linda K.</span>
+        </div>
+        <div class="testimonial">
+            <p>"I can’t say enough good things about Pawfect Pets. They are trustworthy, kind, and my cat, Luna, loves them. They even helped me with some grooming tips. I’m so grateful for their services!"</p>
+            <span>- Rachel B.</span>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <footer id="contact">
+    <div class="footer-sections">
+        <div class="footer-section">
+            <img src="images/logo.png" alt="Pawfect Pets Logo" class="footer-logo">
+            <h3>About</h3>
+            <p>We are passionate about providing the best products and services for your beloved pets.</p>
+        </div>
+        <div class="footer-section">
+            <h3>Contact</h3>
+            <p class="contact-info">
+                <span class="contact-label">Email:</span> 
+                <a href="mailto:info@pawfectpets.com" class="contact-link">info@pawfectpets.com</a>
+            </p>
+            <p class="contact-info">
+                <span class="contact-label">Phone:</span> 
+                <a href="tel:(123) 456-7890" class="contact-link">(123) 456-7890</a>
+            </p>
+        </div>
+        <div class="footer-section">
+            <h3>Newsletter</h3>
+            <form>
+                <input type="email" placeholder="Enter your email" required>
+                <button type="submit" class="btn">Subscribe</button>
+            </form>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p class="copyright">&copy; 2023 Pawfect Pets. All rights reserved.</p>
+        <ul class="footer-links">
+            <li><a href="terms-of-service.html" data-modal-target="terms-of-service.html">Terms of Service</a></li>
+            <li><a href="privacy-policy.html" data-modal-target="privacy-policy.html">Privacy Policy</a></li>
+        </ul>
+        <p class="designer">Designed by <a href="https://alectronic-solutions.github.io/home" target="_blank">Alectronic Solutions</a></p>
+    </div>
+</footer>
+
+        <!-- Modal -->
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <div class="modal-header">
+                    <h2 class="modal-title"></h2>
+                </div>
+                <div class="modal-body">
+                    <img class="modal-image" src="" alt="Modal Image">
+                    <p class="modal-description"></p>
+                    <ul class="modal-features">
+                        <!-- Features will be dynamically added here -->
+                    </ul>
+                    <div class="modal-testimonial">
+                        <p class="modal-testimonial-text"></p>
+                        <span class="modal-testimonial-author"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#footer" class="modal-btn">Book Now</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
