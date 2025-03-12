@@ -34,33 +34,27 @@
         <!-- Hero Section -->
         <section id="home" class="hero">
             <div class="video-container">
-                <video id="video1" class="hero-video" muted loop>
+                <video class="hero-video" muted loop autoplay playsinline poster="images/hero-fallback.jpg">
                     <source src="videos/video1.mp4" type="video/mp4">
-                </video>
-                <video id="video2" class="hero-video" muted loop>
-                    <source src="videos/video2.mp4" type="video/mp4">
-                </video>
-                <video id="video3" class="hero-video" muted loop>
-                    <source src="videos/video3.mp4" type="video/mp4">
                 </video>
             </div>
             <div class="hero-content">
                 <h1>Welcome to Pawfect Pets</h1>
-                <p>Your pet's happiness is our priority.</p>
-                <a href="#store" class="btn">Shop Now</a>
+                <p>Your trusted partner in providing exceptional care for your beloved pets.</p>
+                <a href="#services" class="btn">Explore Our Services</a>
             </div>
         </section>
 
         <!-- Services Section -->
         <section id="services" class="services">
-            <h2 class="section-title">Services</h2>
+            <h2 class="section-title">Our Services</h2>
             <div class="service-cards">
                 <!-- Veterinary Service -->
                 <div class="service-card">
                     <img src="images/veterinary.jpg" alt="Veterinary">
                     <h3>Veterinary</h3>
                     <p>Quality healthcare for your pet</p>
-                    <a href="#" class="btn" data-modal-id="service1" data-section="service">Learn More</a>
+                    <button class="btn" data-modal-id="service1" data-section="service">Learn More</button>
                 </div>
         
                 <!-- Grooming Service -->
@@ -68,7 +62,7 @@
                     <img src="images/grooming.jpg" alt="Grooming">
                     <h3>Grooming</h3>
                     <p>Pamper your pet with a grooming session</p>
-                    <a href="#" class="btn" data-modal-id="service2" data-section="service">Learn More</a>
+                    <button class="btn" data-modal-id="service2" data-section="service">Learn More</button>
                 </div>
         
                 <!-- Training Service -->
@@ -76,7 +70,7 @@
                     <img src="images/training.jpg" alt="Training">
                     <h3>Training</h3>
                     <p>Train your pet to be their best</p>
-                    <a href="#" class="btn" data-modal-id="service3" data-section="service">Learn More</a>
+                    <button class="btn" data-modal-id="service3" data-section="service">Learn More</button>
                 </div>
             </div>
         </section>
@@ -125,80 +119,93 @@
             <div class="gallery-lightbox" id="gallery-lightbox">
                 <span class="close-lightbox">&times;</span>
                 <img class="lightbox-content" id="lightbox-img">
+                <div class="lightbox-nav">
+                    <button class="lightbox-arrow prev-image" onclick="prevImage()">&#10094;</button>
+                    <button class="lightbox-arrow next-image" onclick="nextImage()">&#10095;</button>
+                </div>
                 <div class="caption" id="caption"></div>
             </div>
         </section>
 
         <!-- Store Section -->
         <section id="store" class="store">
-            <h2 class="title">Store</h2>
+            <h2 class="section-title">Our Store</h2>
             <div class="product-grid">
-                <div class="product">
-                    <img src="images/product1.jpg" alt="Product 1">
-                    <h3>Premium Dog Food</h3>
-                    <p class="price">$29.99</p>
-                    <a href="store.html?product=product1" class="btn">Buy Now</a>
+                <div class="product" data-product-id="product1">
+                    <img src="images/product1.jpg" alt="Premium Dog Food">
+                    <div class="product-content">
+                        <h3>Premium Dog Food</h3>
+                        <p class="price">$29.99</p>
+                        <button class="btn">Buy Now</button>
+                    </div>
                 </div>
-                <div class="product">
-                    <img src="images/product2.jpg" alt="Product 2">
-                    <h3>Cat Toys Bundle</h3>
-                    <p class="price">$19.99</p>
-                    <a href="store.html?product=product2" class="btn">Buy Now</a>
+                <div class="product" data-product-id="product2">
+                    <img src="images/product2.jpg" alt="Cat Toys Bundle">
+                    <div class="product-content">
+                        <h3>Cat Toys Bundle</h3>
+                        <p class="price">$19.99</p>
+                        <button class="btn">Buy Now</button>
+                    </div>
                 </div>
-                <div class="product">
-                    <img src="images/product3.jpg" alt="Product 3">
-                    <h3>Pet Grooming Kit</h3>
-                    <p class="price">$39.99</p>
-                    <a href="store.html?product=product3" class="btn">Buy Now</a>
+                <div class="product" data-product-id="product3">
+                    <img src="images/product3.jpg" alt="Pet Grooming Kit">
+                    <div class="product-content">
+                        <h3>Pet Grooming Kit</h3>
+                        <p class="price">$39.99</p>
+                        <button class="btn">Buy Now</button>
+                    </div>
                 </div>
             </div>
         </section>
 
         <!-- Blog Section -->
         <section id="blog" class="blog">
-            <h2 class="title">Blog</h2>
+            <h2 class="section-title">Latest Blog Posts</h2>
             <div class="blog-posts">
-                <!-- Blog Post 1 -->
-                <div class="blog-post">
-                    <div class="blog-card">
-                        <div class="blog-image">
-                            <img src="images/blog1.jpg" alt="Blog 1">
-                        </div>
-                        <div class="overlay">
-                            <h3>5 Tips for a Happy Pet</h3>
-                            <p>Learn how to keep your pet happy and healthy with these simple tips.</p>
-                            <button class="btn" data-section="blog" data-modal-id="blog1">Read More</button>
-                        </div>
+                <article class="blog-post">
+                    <div class="blog-image">
+                        <img src="images/blog1.jpg" alt="Happy pet tips">
                     </div>
-                </div>
+                    <div class="blog-content">
+                        <div class="blog-meta">
+                            <span><i class="far fa-calendar"></i> March 15, 2024</span>
+                            <span><i class="far fa-user"></i> By Dr. Sarah Wilson</span>
+                        </div>
+                        <h3>5 Tips for a Happy Pet</h3>
+                        <p>Learn how to keep your pet happy and healthy with these expert tips and proven strategies...</p>
+                        <button class="read-more-btn" data-section="blog" data-modal-id="blog1">Read More</button>
+                    </div>
+                </article>
 
-                <!-- Blog Post 2 -->
-                <div class="blog-post">
-                    <div class="blog-card">
-                        <div class="blog-image">
-                            <img src="images/blog2.jpg" alt="Blog 2">
-                        </div>
-                        <div class="overlay">
-                            <h3>The Best Pet Grooming Tools</h3>
-                            <p>Discover the top grooming tools every pet owner should have.</p>
-                            <button class="btn" data-section="blog" data-modal-id="blog2">Read More</button>
-                        </div>
+                <article class="blog-post">
+                    <div class="blog-image">
+                        <img src="images/blog2.jpg" alt="Pet grooming tools">
                     </div>
-                </div>
+                    <div class="blog-content">
+                        <div class="blog-meta">
+                            <span><i class="far fa-calendar"></i> March 10, 4</span>
+                            <span><i class="far fa-user"></i> By Mark Thompson</span>
+                        </div>
+                        <h3>Essential Pet Grooming Tools</h3>
+                        <p>Discover the professional grooming tools that every pet owner should have. Keep your furry friend looking their best with these expert-recommended grooming essentials.</p>
+                        <button class="read-more-btn" data-section="blog" data-modal-id="blog2">Read More</button>
+                    </div>
+                </article>
 
-                <!-- Blog Post 3 -->
-                <div class="blog-post">
-                    <div class="blog-card">
-                        <div class="blog-image">
-                            <img src="images/blog3.jpg" alt="Blog 3">
-                        </div>
-                        <div class="overlay">
-                            <h3>Training Your Puppy at Home</h3>
-                            <p>A step-by-step guide to training your puppy at home.</p>
-                            <button class="btn" data-section="blog" data-modal-id="blog3">Read More</button>
-                        </div>
+                <article class="blog-post">
+                    <div class="blog-image">
+                        <img src="images/blog3.jpg" alt="Puppy training guide">
                     </div>
-                </div>
+                    <div class="blog-content">
+                        <div class="blog-meta">
+                            <span><i class="far fa-calendar"></i> March 5, 2024</span>
+                            <span><i class="far fa-user"></i> By Emma Davis</span>
+                        </div>
+                        <h3>Training Your Puppy at Home</h3>
+                        <p>Start your puppy's training journey with confidence using our comprehensive guide. Learn effective techniques and establish good habits from day one.</p>
+                        <button class="read-more-btn" data-section="blog" data-modal-id="blog3">Read More</button>
+                    </div>
+                </article>
             </div>
         </section>
 
@@ -264,10 +271,10 @@
     <div class="footer-bottom">
         <p class="copyright">&copy; 2023 Pawfect Pets. All rights reserved.</p>
         <ul class="footer-links">
-            <li><a href="terms-of-service.html" data-modal-target="terms-of-service.html">Terms of Service</a></li>
-            <li><a href="privacy-policy.html" data-modal-target="privacy-policy.html">Privacy Policy</a></li>
+            <li><a href="terms-of-service.html">Terms of Service</a></li>
+            <li><a href="privacy-policy.html">Privacy Policy</a></li>
         </ul>
-        <p class="designer">Designed by <a href="https://alectronic-solutions.github.io/home" target="_blank">Alectronic Solutions</a></p>
+        <p class="designer">Designed by <a href="https://alectronic-solutions.github.io/" target="_blank">Alectronic Solutions</a></p>
     </div>
 </footer>
 
@@ -280,7 +287,7 @@
                 </div>
                 <div class="modal-body">
                     <img class="modal-image" src="" alt="Modal Image">
-                    <p class="modal-description"></p>
+                    <div class="modal-description"></div>
                     <ul class="modal-features">
                         <!-- Features will be dynamically added here -->
                     </ul>
@@ -290,7 +297,31 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="#footer" class="modal-btn">Book Now</a>
+                    <button class="modal-btn">Book Appointment Now</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="terms-modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <div class="modal-header">
+                    <h2 class="modal-title">Terms of Service</h2>
+                </div>
+                <div class="modal-body">
+                    <!-- Terms of Service content will be dynamically loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <div id="privacy-modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <div class="modal-header">
+                    <h2 class="modal-title">Privacy Policy</h2>
+                </div>
+                <div class="modal-body">
+                    <!-- Privacy Policy content will be dynamically loaded here -->
                 </div>
             </div>
         </div>
