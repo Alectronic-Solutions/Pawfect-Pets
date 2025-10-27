@@ -739,6 +739,12 @@ nav {
     background: rgba(255, 255, 255, 0.1);
 }
 
+/* Style date and time inputs for dark mode */
+.form-group input[type="date"],
+.form-group input[type="time"] {
+    color-scheme: dark;
+}
+
 .order-summary {
     margin-top: 2rem;
     padding: 1rem;
@@ -1314,30 +1320,6 @@ footer {
     }
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .modal-content {
-        width: 90%;
-        padding: 20px;
-        margin: 10px;
-    }
-
-    .modal-title {
-        font-size: 1.8rem;
-    }
-
-    .modal-body {
-        font-size: 0.95rem;
-    }
-
-    .close {
-        top: 15px;
-        right: 15px;
-        width: 35px;
-        height: 35px;
-    }
-}
-
 /* Prevent scrolling when modal is open */
 html.modal-open {
     overflow: hidden;
@@ -1505,8 +1487,9 @@ html.modal-open {
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     }
 
+    /* UPDATED: Removed conflicting flex-direction */
     .product-grid {
-        flex-direction: column;
+        /* display: grid; is already set, auto-fit handles responsiveness */
     }
     .product {
         width: 100%;
@@ -1565,6 +1548,7 @@ html.modal-open {
         grid-template-columns: 1fr;
     }
 
+f
     .modal-title {
         font-size: 1.8rem;
     }
@@ -1637,6 +1621,32 @@ html.modal-open {
     .service-card {
         max-width: 320px;
     }
+}
+
+/* Focus styles for accessibility */
+:focus {
+    outline: 3px solid rgba(76, 209, 165, 0.9);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 3px rgba(108,92,231,0.12);
+}
+
+:focus:not(.focus-visible) {
+    outline: none;
+}
+
+/* Respect user preference for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Make interactive elements obvious when keyboard navigating */
+button, a, .btn {
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 
 /* Utility Classes */
@@ -1791,4 +1801,532 @@ html {
 
 .right-align {
     text-align: right;
+}
+
+/* Service modal card styles */
+.service-modal-card {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 1.5rem;
+    align-items: start;
+    padding: 0.5rem 0;
+}
+
+.service-modal-media img {
+    width: 100%;
+    height: 100%;
+    max-height: 260px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+
+.service-modal-content {
+    color: rgba(255,255,255,0.95);
+}
+
+.service-meta {
+    display: flex;
+    gap: 1rem;
+    margin: 0.75rem 0 1rem;
+    flex-wrap: wrap;
+}
+
+.modal-price, .modal-availability {
+    background: rgba(255,255,255,0.03);
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    border: 1px solid rgba(255,255,255,0.04);
+}
+
+.service-features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.feature-item {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    background: rgba(255,255,255,0.03);
+    padding: 0.6rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.03);
+}
+
+.feature-icon {
+    font-size: 1.25rem;
+    line-height: 1;
+    margin-top: 2px;
+}
+
+.feature-title {
+    color: #fff;
+    display: block;
+    font-size: 0.95rem;
+}
+
+.feature-desc {
+    color: rgba(255,255,255,0.85);
+    font-size: 0.9rem;
+    margin-top: 0.25rem;
+}
+
+/* CTA row */
+.service-cta {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.75rem;
+}
+
+.modal-book-btn {
+    background: linear-gradient(90deg, #4cd1a5, #6c5ce7);
+    border: none;
+    color: #fff;
+    padding: 0.8rem 1rem;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.modal-book-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(76,209,165,0.12);
+}
+
+.modal-close-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.08);
+    color: #fff;
+    padding: 0.6rem 0.9rem;
+    border-radius: 10px;
+}
+
+/* Service Card Modal Overlay */
+.service-card-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1200;
+    padding: 1.5rem;
+    animation: scm-fade 200ms ease;
+}
+
+@keyframes scm-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.service-card-modal {
+    width: 100%;
+    max-width: 1100px;
+    background: linear-gradient(180deg, #131317, #23242a);
+    border-radius: 14px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+    overflow: hidden;
+    transform: translateY(8px);
+    transition: transform 220ms ease, opacity 220ms ease;
+    outline: none;
+    padding: 1rem;
+}
+
+.service-card-modal.active {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.service-card-modal .scm-close {
+    position: absolute;
+    right: 18px;
+    top: 18px;
+    background: rgba(255,255,255,0.04);
+    border: none;
+    color: #fff;
+    font-size: 22px;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.scm-grid {
+    display: grid;
+    grid-template-columns: 420px 1fr;
+    gap: 1.25rem;
+    align-items: start;
+}
+
+.scm-media img {
+    width: 100%;
+    height: 100%;
+    max-height: 420px;
+    object-fit: cover;
+    border-radius: 10px;
+    display: block;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+}
+
+.scm-body {
+    color: #fff;
+}
+
+.scm-long { margin: 0.5rem 0 1rem; color: rgba(255,255,255,0.95); }
+.scm-meta { display:flex; gap:1rem; margin-bottom:0.8rem; flex-wrap:wrap; }
+.scm-price, .scm-availability { background: rgba(255,255,255,0.03); padding:0.4rem 0.6rem; border-radius:8px; font-size:0.95rem; }
+
+.scm-features { display:grid; grid-template-columns: repeat(2, 1fr); gap:0.6rem; margin-top:0.6rem; }
+.scm-feature { display:flex; gap:0.6rem; align-items:flex-start; background: rgba(255,255,255,0.02); padding:0.6rem; border-radius:8px; }
+.scm-feature-icon { font-size:1.15rem; margin-top:4px; }
+.scm-feature-desc { color: rgba(255,255,255,0.8); font-size:0.92rem; margin-top:4px; }
+
+.scm-testimonial { margin-top:0.8rem; background: rgba(255,255,255,0.02); padding:0.8rem; border-radius:8px; }
+.scm-test-text { font-style:italic; margin:0; }
+.scm-test-author { margin-top:0.4rem; text-align:right; color:rgba(255,255,255,0.8); }
+
+.scm-test-controls { display:flex; gap:0.5rem; margin-top:0.5rem; }
+
+.scm-cta { margin-top:1rem; display:flex; gap:0.6rem; }
+.scm-book { background: linear-gradient(90deg,#4cd1a5,#6c5ce7); border:none; padding:0.7rem 1rem; border-radius:10px; font-weight:700; }
+.scm-close-btn { background:transparent; border:1px solid rgba(255,255,255,0.08); padding:0.6rem 0.9rem; border-radius:10px; color:#fff; }
+
+@media (max-width: 900px) {
+    .scm-grid { grid-template-columns: 1fr; }
+    .scm-media img { max-height: 260px; }
+    .scm-features { grid-template-columns: 1fr; }
+}
+
+
+/* (NEW) Booking Section Styles */
+.booking-section {
+    padding: 4rem 2rem;
+    background: rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.booking-container {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 3rem;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.booking-info h3 {
+    font-size: 2rem;
+    color: #4cd1a5;
+    margin-bottom: 1rem;
+}
+
+.booking-info p {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.booking-info p strong {
+    color: #fff;
+}
+
+.appointment-form .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.appointment-form .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.appointment-form .form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.appointment-form label {
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin-left: 0.5rem;
+}
+
+.appointment-form input,
+.appointment-form select,
+.appointment-form textarea {
+    width: 100%;
+    padding: 0.9rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    font-size: 1rem;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    transition: all 0.3s ease;
+}
+
+.appointment-form input:focus,
+.appointment-form select:focus,
+.appointment-form textarea:focus {
+    outline: none;
+    border-color: #4cd1a5;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.appointment-form select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23ffffff' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1em;
+}
+
+.appointment-form select option {
+    background: #2d3436;
+    color: #fff;
+}
+
+.appointment-form input[type="date"],
+.appointment-form input[type="time"] {
+    color-scheme: dark;
+}
+
+.appointment-form textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.appointment-form .btn {
+    width: 100%;
+    margin-top: 1.5rem;
+    padding: 1rem;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+}
+
+/* Booking Section Responsive */
+@media (max-width: 900px) {
+    .booking-container {
+        grid-template-columns: 1fr;
+        padding: 2rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .appointment-form .form-grid {
+        grid-template-columns: 1fr;
+    }
+}right-align {
+    text-align: right;
+}
+
+/* Service modal card styles */
+.service-modal-card {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 1.5rem;
+    align-items: start;
+    padding: 0.5rem 0;
+}
+
+.service-modal-media img {
+    width: 100%;
+    height: 100%;
+    max-height: 260px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+
+.service-modal-content {
+    color: rgba(255,255,255,0.95);
+}
+
+.service-meta {
+    display: flex;
+    gap: 1rem;
+    margin: 0.75rem 0 1rem;
+    flex-wrap: wrap;
+}
+
+.modal-price, .modal-availability {
+    background: rgba(255,255,255,0.03);
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    border: 1px solid rgba(255,255,255,0.04);
+}
+
+.service-features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.feature-item {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    background: rgba(255,255,255,0.03);
+    padding: 0.6rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.03);
+}
+
+.feature-icon {
+    font-size: 1.25rem;
+    line-height: 1;
+    margin-top: 2px;
+}
+
+.feature-title {
+    color: #fff;
+    display: block;
+    font-size: 0.95rem;
+}
+
+.feature-desc {
+    color: rgba(255,255,255,0.85);
+    font-size: 0.9rem;
+    margin-top: 0.25rem;
+}
+
+/* CTA row */
+.service-cta {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.75rem;
+}
+
+.modal-book-btn {
+    background: linear-gradient(90deg, #4cd1a5, #6c5ce7);
+    border: none;
+    color: #fff;
+    padding: 0.8rem 1rem;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.modal-book-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(76,209,165,0.12);
+}
+
+.modal-close-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.08);
+    color: #fff;
+    padding: 0.6rem 0.9rem;
+    border-radius: 10px;
+}
+
+/* Service Card Modal Overlay */
+.service-card-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1200;
+    padding: 1.5rem;
+    animation: scm-fade 200ms ease;
+}
+
+@keyframes scm-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.service-card-modal {
+    width: 100%;
+    max-width: 1100px;
+    background: linear-gradient(180deg, #131317, #23242a);
+    border-radius: 14px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+    overflow: hidden;
+    transform: translateY(8px);
+    transition: transform 220ms ease, opacity 220ms ease;
+    outline: none;
+    padding: 1rem;
+}
+
+.service-card-modal.active {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.service-card-modal .scm-close {
+    position: absolute;
+    right: 18px;
+    top: 18px;
+    background: rgba(255,255,255,0.04);
+    border: none;
+    color: #fff;
+    font-size: 22px;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.scm-grid {
+    display: grid;
+    grid-template-columns: 420px 1fr;
+    gap: 1.25rem;
+    align-items: start;
+}
+
+.scm-media img {
+    width: 100%;
+    height: 100%;
+    max-height: 420px;
+    object-fit: cover;
+    border-radius: 10px;
+    display: block;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+}
+
+.scm-body {
+    color: #fff;
+}
+
+.scm-long { margin: 0.5rem 0 1rem; color: rgba(255,255,255,0.95); }
+.scm-meta { display:flex; gap:1rem; margin-bottom:0.8rem; flex-wrap:wrap; }
+.scm-price, .scm-availability { background: rgba(255,255,255,0.03); padding:0.4rem 0.6rem; border-radius:8px; font-size:0.95rem; }
+
+.scm-features { display:grid; grid-template-columns: repeat(2, 1fr); gap:0.6rem; margin-top:0.6rem; }
+.scm-feature { display:flex; gap:0.6rem; align-items:flex-start; background: rgba(255,255,255,0.02); padding:0.6rem; border-radius:8px; }
+.scm-feature-icon { font-size:1.15rem; margin-top:4px; }
+.scm-feature-desc { color: rgba(255,255,255,0.8); font-size:0.92rem; margin-top:4px; }
+
+.scm-testimonial { margin-top:0.8rem; background: rgba(255,255,255,0.02); padding:0.8rem; border-radius:8px; }
+.scm-test-text { font-style:italic; margin:0; }
+.scm-test-author { margin-top:0.4rem; text-align:right; color:rgba(255,255,255,0.8); }
+
+.scm-test-controls { display:flex; gap:0.5rem; margin-top:0.5rem; }
+
+.scm-cta { margin-top:1rem; display:flex; gap:0.6rem; }
+.scm-book { background: linear-gradient(90deg,#4cd1a5,#6c5ce7); border:none; padding:0.7rem 1rem; border-radius:10px; font-weight:700; }
+.scm-close-btn { background:transparent; border:1px solid rgba(255,255,255,0.08); padding:0.6rem 0.9rem; border-radius:10px; color:#fff; }
+
+@media (max-width: 900px) {
+    .scm-grid { grid-template-columns: 1fr; }
+    .scm-media img { max-height: 260px; }
+    .scm-features { grid-template-columns: 1fr; }
 }
