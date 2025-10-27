@@ -1,53 +1,38 @@
 // Mobile Navigation
 const burger = document.querySelector('.burger');
-const nav = document.querySelector('.nav-links');
+const nav = document.getElementById('primary-navigation');
 const navLinks = document.querySelectorAll('.nav-links li');
 
+// Single robust toggle function (guards if elements missing)
 function toggleNav() {
-    // Toggle nav and burger
-    nav.classList.toggle('active');
-    burger.classList.toggle('active');
-    
-    // Toggle body scroll
-    document.body.style.overflow = nav.classList.contains('active') ? 'hidden' : '';
-    
-    // Animate links
-    navLinks.forEach((link, index) => {
-        if (link.style.animation) {
-            link.style.animation = '';
-        } else {
-            link.style.animation = `fadeIn 0.5s ease forwards ${index * 0.1 + 0.3}s`;
-        }
-    });
+	if (!nav || !burger) return;
+	const isActive = nav.classList.toggle('active');
+	burger.classList.toggle('active');
+	burger.setAttribute('aria-expanded', isActive ? 'true' : 'false');
+	nav.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+	document.body.style.overflow = isActive ? 'hidden' : '';
+	navLinks.forEach((link, index) => {
+		if (link.style.animation) link.style.animation = '';
+		else link.style.animation = `fadeIn 0.5s ease forwards ${index * 0.1 + 0.3}s`;
+	});
 }
 
-// Add this new keyframe animation
-document.head.insertAdjacentHTML('beforeend', `
-    <style>
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
-`);
-
-burger.addEventListener('click', toggleNav);
-
-navLinks.forEach(link => {
-    link.addEventListener('click', () => {
-        if (nav.classList.contains('active')) {
-            toggleNav();
-        }
-    });
-});
+// Attach only when elements exist
+if (burger) burger.addEventListener('click', toggleNav);
+if (navLinks && navLinks.length) {
+	navLinks.forEach(link => {
+		link.addEventListener('click', () => {
+			if (nav && nav.classList.contains('active')) toggleNav();
+		});
+	});
+}
 
 // Close menu when clicking outside
 document.addEventListener('click', (e) => {
-    if (nav.classList.contains('active') && 
-        !nav.contains(e.target) && 
-        !burger.contains(e.target)) {
-        toggleNav();
-    }
+	if (nav && burger && nav.classList.contains('active') &&
+		!nav.contains(e.target) && !burger.contains(e.target)) {
+		toggleNav();
+	}
 });
 
 // Header scroll effect
@@ -55,6 +40,7 @@ const header = document.querySelector('header');
 let lastScroll = 0;
 
 window.addEventListener('scroll', () => {
+    if (!header) return;
     const currentScroll = window.pageYOffset;
     
     // Add background when scrolled
@@ -73,342 +59,57 @@ window.addEventListener('scroll', () => {
         header.style.transform = 'translateY(0)';
     }
     
-    lastScroll = currentScroll;
+    lastScroll = currentScroll <= 0 ? 0 : currentScroll; // For Mobile or negative scrolling
 });
 
-// Modal Functionality
-const modalTriggers = document.querySelectorAll('.btn[data-modal-id][data-section]');
-const modal = document.getElementById('modal');
-const closeBtn = document.querySelector('.close');
-const modalImage = document.querySelector('.modal-image');
-const modalTitle = document.querySelector('.modal-title');
-const modalDescription = document.querySelector('.modal-description');
-const modalBtn = document.querySelector('.modal-btn');
+// Modal accessibility helpers
+let lastFocusedElement = null;
 
-// Service Data
-const servicesData = {
-    service1: {
-        image: 'images/veterinary.jpg',
-        title: 'Veterinary Services',
-        description: 'Professional medical care for your beloved pets',
-        features: [
-            'Complete Health Examinations: Thorough physical assessments to ensure your pet\'s overall wellbeing',
-            'Vaccinations & Preventive Care: Custom vaccination schedules and preventive treatments',
-            'Surgery & Dental Services: State-of-the-art surgical procedures and dental cleaning',
-            'Emergency Care Available: 24/7 emergency response team for critical situations',
-            'Digital X-rays & Lab Testing: Advanced diagnostic equipment for accurate results',
-            'Microchipping Services: Safe and permanent pet identification solution'
-        ],
-        price: 'Starting from $50',
-        availability: '24/7 Emergency Care Available'
-    },
-    service2: {
-        image: 'images/grooming.jpg',
-        title: 'Professional Grooming',
-        description: 'Spa-like experience for your furry friends',
-        features: [
-            'Full Service Bath & Brush: Deep cleaning with premium pet-safe products',
-            'Breed-Specific Styling: Custom grooming tailored to your pet\'s breed',
-            'Nail Trimming & Care: Professional nail maintenance and paw care',
-            'Ear Cleaning: Gentle and thorough ear cleaning to prevent infections',
-            'De-matting Treatment: Careful removal of tangles and mats',
-            'Specialty Treatments: Custom spa treatments for skin conditions'
-        ],
-        price: 'Starting from $35',
-        availability: 'Tuesday - Sunday, 9am - 6pm'
-    },
-    service3: {
-        image: 'images/training.jpg',
-        title: 'Pet Training Programs',
-        description: 'Expert behavioral training and socialization',
-        features: [
-            'Basic Obedience Training: Essential commands and behavioral foundations',
-            'Behavior Modification: Solutions for common behavioral issues',
-            'Puppy Training Classes: Early socialization and basic training for puppies',
-            'Private Sessions: One-on-one training tailored to your pet\'s needs',
-            'Group Classes: Socialization and training in a group setting',
-            'Agility Training: Fun and challenging physical activity courses'
-        ],
-        price: 'Starting from $45/session',
-        availability: 'Flexible Scheduling Available'
-    }
-};
+function setAriaOpen(element, open) {
+    if (!element) return;
+    element.setAttribute('aria-hidden', open ? 'false' : 'true');
+}
 
-function showModal(id) {
-    const service = servicesData[id];
-    if (service) {
-        modalImage.src = service.image;
-        modalTitle.textContent = service.title;
-        modalDescription.innerHTML = `
-            <div class="modal-service-info">
-                <p class="modal-full-description">${service.description}</p>
-                <div class="modal-service-details">
-                    <div class="modal-price">
-                        <span class="detail-label">💰 Pricing:</span>
-                        <span>${service.price}</span>
-                    </div>
-                    <div class="modal-availability">
-                        <span class="detail-label">🕒 Availability:</span>
-                        <span>${service.availability}</span>
-                    </div>
-                </div>
-                <div class="modal-features-list">
-                    <button class="collapsible">Services Included <span class="arrow-icon">▼</span></button>
-                    <div class="collapsible-content">
-                        <ul>
-                            ${service.features.map(feature => {
-                                const [title, description] = feature.split(':');
-                                return `
-                                    <li>
-                                        <i class="fas fa-paw"></i>
-                                        <strong>${title}</strong>
-                                        <p>${description || ''}</p>
-                                    </li>
-                                `;
-                            }).join('')}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        // Add collapsible functionality
-        const collapsible = modalDescription.querySelector('.collapsible');
-        const content = modalDescription.querySelector('.collapsible-content');
-        const arrow = collapsible.querySelector('.arrow-icon');
-        
-        collapsible.addEventListener('click', () => {
-            collapsible.classList.toggle('active');
-            if (content.style.maxHeight) {
-                content.style.maxHeight = null;
-                arrow.textContent = '▼';
-            } else {
-                content.style.maxHeight = content.scrollHeight + "px";
-                arrow.textContent = '▲';
+// Simple focus trap (basic)
+function trapFocus(modalEl) {
+    const focusableSelectors = 'a[href], button:not([disabled]), textarea, input[type="text"], input[type="email"], input[type="tel"], input[type="date"], input[type="time"], input[type="number"], select, [tabindex]:not([tabindex="-1"])';
+    const focusables = Array.from(modalEl.querySelectorAll(focusableSelectors));
+    if (!focusables.length) return;
+    
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    
+    first.focus();
+    
+    function handleKey(e) {
+        if (e.key === 'Tab') {
+            if (e.shiftKey && document.activeElement === first) {
+                e.preventDefault();
+                last.focus();
+            } else if (!e.shiftKey && document.activeElement === last) {
+                e.preventDefault();
+                first.focus();
             }
-        });
-
-        modal.classList.add('active');
-        document.documentElement.classList.add('modal-open');
-    }
-}
-
-function hideModal() {
-    modal.classList.remove('active');
-    document.documentElement.classList.remove('modal-open');
-    // Reset collapsible content
-    const collapsible = modalDescription.querySelector('.collapsible');
-    const content = modalDescription.querySelector('.collapsible-content');
-    const arrow = collapsible?.querySelector('.arrow-icon');
-    if (collapsible && content && arrow) {
-        collapsible.classList.remove('active');
-        content.style.maxHeight = null;
-        arrow.textContent = '▼';
-    }
-}
-
-// Add click handlers for service card images
-document.querySelectorAll('.service-card').forEach(card => {
-    card.addEventListener('click', (e) => {
-        // Don't trigger if clicking the button
-        if (!e.target.classList.contains('btn')) {
-            const modalId = card.querySelector('.btn').getAttribute('data-modal-id');
-            showModal(modalId);
-        }
-    });
-});
-
-// Event Listeners for Modal
-modalTriggers.forEach(trigger => {
-    trigger.addEventListener('click', (e) => {
-        e.preventDefault();
-        const id = trigger.getAttribute('data-modal-id');
-        showModal(id);
-    });
-});
-
-// Close modal when clicking close button
-closeBtn.addEventListener('click', hideModal);
-
-// Close modal when clicking outside
-modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-        hideModal();
-    }
-});
-
-// Close modal with Escape key
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal.classList.contains('active')) {
-        hideModal();
-    }
-});
-
-// Blog Data
-const blogsData = {
-    blog1: {
-        image: 'images/blog1.jpg',
-        title: '5 Tips for a Happy Pet',
-        content: `
-            <p>Keeping your pet happy and healthy is a top priority for any pet owner. Here are five tips to ensure your furry friend lives their best life:</p>
-            <ul>
-                <li><strong>Regular Exercise:</strong> Daily walks, playtime, and interactive toys keep your pet physically and mentally stimulated.</li>
-                <li><strong>Balanced Diet:</strong> Feed your pet high-quality food that meets their nutritional needs. Avoid overfeeding to prevent obesity.</li>
-                <li><strong>Routine Vet Visits:</strong> Regular check-ups and vaccinations help catch health issues early and keep your pet in top shape.</li>
-                <li><strong>Mental Stimulation:</strong> Puzzle toys, training sessions, and new environments can keep your pet's mind sharp and engaged.</li>
-                <li><strong>Love and Attention:</strong> Pets thrive on affection. Spend quality time with them, and they'll return the love tenfold.</li>
-            </ul>
-            <p>By following these tips, you'll create a happy and healthy environment for your pet.</p>
-        `
-    },
-    blog2: {
-        image: 'images/blog2.jpg',
-        title: 'The Best Pet Grooming Tools',
-        content: `
-            <p>Grooming your pet isn't just about keeping them clean; it's also about maintaining their health and comfort. Here are the essential grooming tools every pet owner should have:</p>
-            <ul>
-                <li><strong>Slicker Brush:</strong> Ideal for removing loose hair and preventing matting in dogs and cats.</li>
-                <li><strong>Nail Clippers:</strong> Regular nail trimming prevents discomfort and keeps your pet's nails at a healthy length.</li>
-                <li><strong>Shampoo and Conditioner:</strong> Use pet-specific products to avoid skin irritation and ensure a thorough clean.</li>
-                <li><strong>Ear Cleaning Solution:</strong> Regular ear cleaning helps prevent infections and keeps your pet's ears healthy.</li>
-                <li><strong>Deshedding Tool:</strong> Perfect for pets with thick coats, this tool reduces shedding and keeps your home cleaner.</li>
-            </ul>
-            <p>Investing in these tools will make grooming sessions easier and more effective for both you and your pet.</p>
-        `
-    },
-    blog3: {
-        image: 'images/blog3.jpg',
-        title: 'Training Your Puppy at Home',
-        content: `
-            <p>Training your puppy is a crucial step in raising a well-behaved and happy dog. Here's a step-by-step guide to help you get started:</p>
-            <ol>
-                <li><strong>Start Early:</strong> Begin training as soon as you bring your puppy home. Consistency is key.</li>
-                <li><strong>Use Positive Reinforcement:</strong> Reward good behavior with treats, praise, and affection. Avoid punishment.</li>
-                <li><strong>Teach Basic Commands:</strong> Start with essential commands like "sit," "stay," "come," and "down."</li>
-                <li><strong>Be Patient:</strong> Puppies have short attention spans, so keep training sessions short and fun.</li>
-                <li><strong>Socialize Your Puppy:</strong> Introduce your puppy to different people, animals, and environments to build confidence.</li>
-            </ol>
-            <p>With patience and consistency, you'll have a well-trained and obedient puppy in no time.</p>
-        `
-    }
-};
-
-// Gallery Lightbox Functionality
-const galleryItems = document.querySelectorAll('.gallery-item img');
-const lightbox = document.getElementById('gallery-lightbox');
-const lightboxImg = document.getElementById('lightbox-img');
-const captionText = document.getElementById('caption');
-const closeLightbox = document.querySelector('.close-lightbox');
-let currentImageIndex = 0;
-
-function updateLightboxContent(index) {
-    const item = galleryItems[index];
-    lightboxImg.src = item.src;
-    captionText.innerHTML = item.alt;
-}
-
-function openLightbox(imgSrc, caption, index) {
-    lightbox.style.display = 'block';
-    document.body.style.overflow = 'hidden';
-    currentImageIndex = index;
-    updateLightboxContent(currentImageIndex);
-}
-
-function nextImage() {
-    currentImageIndex = (currentImageIndex + 1) % galleryItems.length;
-    updateLightboxContent(currentImageIndex);
-}
-
-function prevImage() {
-    currentImageIndex = (currentImageIndex - 1 + galleryItems.length) % galleryItems.length;
-    updateLightboxContent(currentImageIndex);
-}
-
-function closeLightboxFunction() {
-    lightbox.style.display = 'none';
-    document.body.style.overflow = '';
-}
-
-// Event Listeners
-galleryItems.forEach((item, index) => {
-    item.addEventListener('click', () => {
-        openLightbox(item.src, item.alt, index);
-    });
-});
-
-closeLightbox.addEventListener('click', closeLightboxFunction);
-
-lightbox.addEventListener('click', (e) => {
-    if (e.target === lightbox) {
-        closeLightboxFunction();
-    }
-});
-
-document.addEventListener('keydown', (e) => {
-    if (lightbox.style.display === 'block') {
-        if (e.key === 'ArrowRight') nextImage();
-        if (e.key === 'ArrowLeft') prevImage();
-        if (e.key === 'Escape') closeLightboxFunction();
-    }
-});
-
-// Testimonials Carousel
-const testimonials = document.querySelectorAll('.testimonial');
-let currentTestimonial = 0;
-
-function showTestimonial(index) {
-    testimonials.forEach((testimonial, i) => {
-        testimonial.classList.remove('active');
-        if (i === index) {
-            testimonial.classList.add('active');
-        }
-    });
-}
-
-function nextTestimonial() {
-    currentTestimonial = (currentTestimonial + 1) % testimonials.length;
-    showTestimonial(currentTestimonial);
-}
-
-// Initial display
-showTestimonial(currentTestimonial);
-
-// Change testimonial every 6 seconds
-setInterval(nextTestimonial, 6000);
-
-if (modalBtn) {
-    modalBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        hideModal();
-        setTimeout(() => {
-            const footer = document.querySelector('#contact');
-            if (footer) {
-                footer.scrollIntoView({ behavior: 'smooth' });
-            }
-        }, 300);
-    });
-}
-
-// JavaScript for Video Background
-document.addEventListener('DOMContentLoaded', () => {
-    const video = document.querySelector('.hero-video');
-    if (video) {
-        video.classList.add('active');
-        // Try to play the video
-        const playPromise = video.play();
-        if (playPromise !== undefined) {
-            playPromise.then(() => {
-                console.log('Video is playing');
-            }).catch(error => {
-                console.error("Video play failed:", error);
-                // Add a fallback background if video fails
-                document.querySelector('.video-container').style.background = 'linear-gradient(135deg, #6c5ce7, #4cd1a5)';
-            });
+        } else if (e.key === 'Escape') {
+            // Check which modal is open and close it
+            if (document.querySelector('.service-card-modal-overlay')) closeServiceCardModal();
+            if (document.querySelector('.gallery-lightbox[style*="display: block"]')) closeLightbox();
+            if (document.querySelector('.blog-modal.active')) hideBlogModal();
+            if (document.querySelector('.order-modal.active')) hideOrderModal();
         }
     }
-});
+    modalEl._trapHandler = handleKey;
+    document.addEventListener('keydown', handleKey);
+}
 
-// Product Data
+function releaseFocus(modalEl) {
+    if (!modalEl || !modalEl._trapHandler) return;
+    document.removeEventListener('keydown', modalEl._trapHandler);
+    modalEl._trapHandler = null;
+    if (lastFocusedElement) lastFocusedElement.focus();
+}
+
+// --- Data Objects ---
 const productsData = {
     product1: {
         image: 'images/product1.jpg',
@@ -430,233 +131,491 @@ const productsData = {
     }
 };
 
-// Product-related code
-const productDetails = document.getElementById('product-details');
-
-// Only run product-related code if we're on the store page
-if (productDetails) {
-    // List of product IDs in order
-    const productIds = ['product1', 'product2', 'product3'];
-
-    // Get the current product ID from the URL
-    const urlParams = new URLSearchParams(window.location.search);
-    let currentProductId = urlParams.get('product') || productIds[0];
-
-    // Find the index of the current product
-    let currentIndex = productIds.indexOf(currentProductId);
-
-    // Function to update product details
-    function updateProductDetails(productId) {
-        const product = productsData[productId];
-        productDetails.innerHTML = `
-            <button class="arrow left" data-product="${getPreviousIndex(currentIndex)}">&#8249;</button>
-            <img src="${product.image}" alt="${product.title}" class="product-image">
-            <h1>${product.title}</h1>
-            <p>${product.description}</p>
-            <p class="price">Price: ${product.price}</p>
-            <button class="arrow right" data-product="${getNextIndex(currentIndex)}">&#8250;</button>
-        `;
-        // Update current index
-        currentIndex = productIds.indexOf(productId);
+const servicesData = {
+    service1: {
+        image: 'images/veterinary.jpg',
+        title: 'Veterinary Services',
+        description: 'Professional medical care for your beloved pets',
+        longDescription: `Our veterinary team provides preventative care, diagnostics, and advanced treatments. We combine compassionate handling with modern equipment to ensure fast, accurate care.`,
+        features: [
+            'Complete Health Examinations: Thorough physical assessments to ensure your pet\'s overall wellbeing',
+            'Vaccinations & Preventive Care: Custom vaccination schedules and preventive treatments',
+            'Surgery & Dental Services: State-of-the-art surgical procedures and dental cleaning',
+            'Emergency Care Available: 24/7 emergency response team for critical situations',
+            'Digital X-rays & Lab Testing: Advanced diagnostic equipment for accurate results',
+            'Microchipping Services: Safe and permanent pet identification solution'
+        ],
+        price: 'Starting from $50',
+        availability: '24/7 Emergency Care Available',
+        testimonials: [
+            { text: "The vets saved Luna's life and explained everything clearly.", author: "Sarah M." },
+            { text: "Professional, kind and thorough. Highly recommended.", author: "John L." }
+        ]
+    },
+    service2: {
+        image: 'images/grooming.jpg',
+        title: 'Professional Grooming',
+        description: 'Spa-like experience for your furry friends',
+        longDescription: `Our groomers offer breed-specific styling, gentle handling, and premium products. We focus on comfort and safety during every session.`,
+        features: [
+            'Full Service Bath & Brush: Deep cleaning with premium pet-safe products',
+            'Breed-Specific Styling: Custom grooming tailored to your pet\'s breed',
+            'Nail Trimming & Care: Professional nail maintenance and paw care',
+            'Ear Cleaning: Gentle and thorough ear cleaning to prevent infections',
+            'De-matting Treatment: Careful removal of tangles and mats',
+            'Specialty Treatments: Custom spa treatments for skin conditions'
+        ],
+        price: 'Starting from $35',
+        availability: 'Tuesday - Sunday, 9am - 6pm',
+        testimonials: [
+            { text: "My dog looked and smelled amazing after their groom.", author: "Emily R." },
+            { text: "Gentle staff and excellent styling for my breed.", author: "Michael T." }
+        ]
+    },
+    service3: {
+        image: 'images/training.jpg',
+        title: 'Pet Training Programs',
+        description: 'Expert behavioral training and socialization',
+        longDescription: `Tailored training plans for puppies and adult dogs focusing on positive reinforcement and practical, real-world results.`,
+        features: [
+            'Basic Obedience Training: Essential commands and behavioral foundations',
+            'Behavior Modification: Solutions for common behavioral issues',
+            'Puppy Training Classes: Early socialization and basic training for puppies',
+            'Private Sessions: One-on-one training tailored to your pet\'s needs',
+            'Group Classes: Socialization and training in a group setting',
+            'Agility Training: Fun and challenging physical activity courses'
+        ],
+        price: 'Starting from $45/session',
+        availability: 'Flexible Scheduling Available',
+        testimonials: [
+            { text: "Our puppy is so much calmer and listens now.", author: "Linda K." },
+            { text: "Great trainers and very practical techniques.", author: "Rachel B." }
+        ]
     }
+};
 
-    // Add event listeners to arrows
-    document.addEventListener('click', (e) => {
-        if (e.target.classList.contains('arrow')) {
-            const newProductId = productIds[e.target.dataset.product];
-            updateProductDetails(newProductId);
-        }
-    });
+const blogsData = {
+    blog1: {
+        image: 'images/blog1.jpg',
+        title: '5 Tips for a Happy Pet',
+        date: 'March 15, 2024',
+        author: 'Dr. Sarah Wilson',
+        content: `
+            <p>Keeping your pet happy and healthy is a top priority for any pet owner. Here are five tips to ensure your furry friend lives their best life:</p>
+            <ul>
+                <li><strong>Regular Exercise:</strong> Daily walks, playtime, and interactive toys keep your pet physically and mentally stimulated.</li>
+                <li><strong>Balanced Diet:</strong> Feed your pet high-quality food that meets their nutritional needs. Avoid overfeeding to prevent obesity.</li>
+                <li><strong>Routine Vet Visits:</strong> Regular check-ups and vaccinations help catch health issues early and keep your pet in top shape.</li>
+                <li><strong>Mental Stimulation:</strong> Puzzle toys, training sessions, and new environments can keep your pet's mind sharp and engaged.</li>
+                <li><strong>Love and Attention:</strong> Pets thrive on affection. Spend quality time with them, and they'll return the love tenfold.</li>
+            </ul>
+            <p>By following these tips, you'll create a happy and healthy environment for your pet.</p>
+        `
+    },
+    blog2: {
+        image: 'images/blog2.jpg',
+        title: 'The Best Pet Grooming Tools',
+        date: 'March 10, 2024',
+        author: 'Mark Thompson',
+        content: `
+            <p>Discover the professional grooming tools that every pet owner should have. Keep your furry friend looking their best with these expert-recommended grooming essentials.</p>
+            <h4>Must-Have Tools</h4>
+            <ul>
+                <li><strong>Slicker Brush:</strong> Great for removing tangles and loose fur.</li>
+                <li><strong>Nail Clippers:</strong> Essential for regular nail maintenance.</li>
+                <li><strong>Pet-Safe Shampoo:</strong> Use a gentle formula to avoid skin irritation.</li>
+                <li><strong>Grooming Wipes:</strong> Perfect for quick clean-ups between baths.</li>
+            </ul>
+        `
+    },
+    blog3: {
+        image: 'images/blog3.jpg',
+        title: 'Training Your Puppy at Home',
+        date: 'March 5, 2024',
+        author: 'Emma Davis',
+        content: `
+            <p>Start your puppy's training journey with confidence using our comprehensive guide. Learn effective techniques and establish good habits from day one.</p>
+            <p>Focus on positive reinforcement. Reward good behavior with treats, praise, or toys. Keep training sessions short and fun to maintain your puppy's attention.</p>
+            <h4>Key Commands to Start With:</h4>
+            <ol>
+                <li><strong>Sit:</strong> The most basic command.</li>
+                <li><strong>Stay:</strong> Teaches patience and self-control.</li>
+                <li><strong>Come:</strong> Crucial for safety.</li>
+                <li><strong>Leave It:</strong> Prevents your puppy from picking up dangerous items.</li>
+            </ol>
+        `
+    }
+};
 
-    // Initial product load
-    updateProductDetails(currentProductId);
+// --- Service Modal (NEW) ---
+// This function creates the modal from scratch and is self-contained
+let currentServiceModal = null; // To keep track of the created modal
+
+function openServiceCardModal(id) {
+	const service = servicesData[id];
+	if (!service) return;
+
+	if (document.querySelector('.service-card-modal-overlay')) return;
+
+	lastFocusedElement = document.activeElement;
+	currentServiceModal = document.createElement('div');
+	currentServiceModal.className = 'service-card-modal-overlay';
+	currentServiceModal.setAttribute('role', 'dialog');
+	currentServiceModal.setAttribute('aria-modal', 'true');
+	currentServiceModal.setAttribute('aria-labelledby', 'service-modal-title');
+
+	try {
+		currentServiceModal.innerHTML = `
+			<div class="service-card-modal" tabindex="-1">
+				<button class="scm-close" aria-label="Close">×</button>
+				<div class="scm-grid">
+					<div class="scm-media">
+						<img src="${service.image}" alt="${service.title}">
+					</div>
+					<div class="scm-body">
+						<h3 id="service-modal-title">${service.title}</h3>
+						<p class="scm-long">${service.longDescription || service.description}</p>
+						<div class="scm-meta">
+							<span class="scm-price"><strong>Price:</strong> ${service.price}</span>
+							<span class="scm-availability"><strong>Availability:</strong> ${service.availability}</span>
+						</div>
+						<h4>What's included</h4>
+						<div class="scm-features" role="list">
+							${service.features.map(f => {
+								const parts = f.split(':');
+								const title = parts.shift().trim();
+								const desc = parts.join(':').trim();
+								return `<div class="scm-feature" role="listitem">
+									<div class="scm-feature-icon">🐾</div>
+									<div class="scm-feature-body"><strong>${title}</strong>${desc ? `<div class="scm-feature-desc">${desc}</div>` : ''}</div>
+								</div>`;
+							}).join('')}
+						</div>
+
+						<h4>Client feedback</h4>
+						<div class="scm-testimonial" aria-live="polite">
+							<blockquote class="scm-test-text">${(service.testimonials && service.testimonials[0] && service.testimonials[0].text) || ''}</blockquote>
+							<div class="scm-test-author">${(service.testimonials && service.testimonials[0] && service.testimonials[0].author) ? '— ' + service.testimonials[0].author : ''}</div>
+							<div class="scm-test-controls">
+								<button class="scm-test-prev btn">Prev</button>
+								<button class="scm-test-next btn">Next</button>
+							</div>
+						</div>
+
+						<div class="scm-cta">
+							<button class="scm-book btn">Book Appointment</button>
+							<button class="scm-close-btn btn">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		`;
+
+		document.body.appendChild(currentServiceModal);
+		const dialog = currentServiceModal.querySelector('.service-card-modal');
+
+		// --- Add Handlers for this specific modal ---
+		let tIndex = 0;
+		const tText = currentServiceModal.querySelector('.scm-test-text');
+		const tAuthor = currentServiceModal.querySelector('.scm-test-author');
+		
+		function updateTestimonial() {
+			const arr = service.testimonials || [];
+			if (!arr.length) return;
+			tIndex = (tIndex + arr.length) % arr.length;
+			if (tText) tText.textContent = arr[tIndex].text;
+			if (tAuthor) tAuthor.textContent = '— ' + arr[tIndex].author;
+		}
+
+		currentServiceModal.querySelector('.scm-test-prev')?.addEventListener('click', () => { tIndex--; updateTestimonial(); });
+		currentServiceModal.querySelector('.scm-test-next')?.addEventListener('click', () => { tIndex++; updateTestimonial(); });
+		currentServiceModal.querySelector('.scm-close')?.addEventListener('click', closeServiceCardModal);
+		currentServiceModal.querySelector('.scm-close-btn')?.addEventListener('click', closeServiceCardModal);
+		currentServiceModal.querySelector('.scm-book')?.addEventListener('click', () => {
+            closeServiceCardModal();
+            setTimeout(() => {
+                // UPDATED: Point to the new booking form
+                document.querySelector('#booking')?.scrollIntoView({ behavior: 'smooth' });
+            }, 200);
+        });
+        
+		currentServiceModal.addEventListener('click', (e) => { 
+            if (e.target === currentServiceModal) closeServiceCardModal(); 
+        });
+
+		document.documentElement.classList.add('modal-open');
+		trapFocus(dialog);
+		requestAnimationFrame(() => dialog.classList.add('active'));
+	} catch (err) {
+		console.error('openServiceCardModal error', err);
+		if (currentServiceModal) currentServiceModal.remove();
+        currentServiceModal = null;
+	}
 }
 
-// Store Order Modal Functionality
-function createOrderModal() {
-    const modal = document.createElement('div');
-    modal.className = 'order-modal';
-    modal.innerHTML = `
-        <div class="order-content">
-            <span class="close">&times;</span>
-            <h2 class="modal-title">Complete Your Order</h2>
-            <form class="order-form">
-                <div class="form-group">
-                    <label for="name">Full Name</label>
-                    <input type="text" id="name" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="phone">Phone</label>
-                    <input type="tel" id="phone" required>
-                </div>
-                <div class="order-summary">
-                    <div class="summary-row">
-                        <span>Product:</span>
-                        <span class="product-name"></span>
-                    </div>
-                    <div class="summary-row">
-                        <span>Price:</span>
-                        <span class="product-price"></span>
-                    </div>
-                    <div class="summary-row summary-total">
-                        <span>Total:</span>
-                        <span class="total-price"></span>
-                    </div>
-                </div>
-                <button type="submit" class="btn modal-btn">Place Order</button>
-            </form>
-        </div>
+function closeServiceCardModal() {
+    if (!currentServiceModal) return;
+    try {
+        const dialog = currentServiceModal.querySelector('.service-card-modal');
+        releaseFocus(dialog);
+        currentServiceModal.remove();
+        currentServiceModal = null;
+        document.documentElement.classList.remove('modal-open');
+    } catch (err) {
+        console.error('closeServiceCardModal error', err);
+    }
+}
+
+
+// --- Gallery Lightbox (FIXED) ---
+const lightbox = document.getElementById('gallery-lightbox');
+const lightboxImg = document.getElementById('lightbox-img');
+const lightboxCaption = document.getElementById('lightbox-caption-text');
+const galleryItems = document.querySelectorAll('.gallery-item');
+let currentImageIndex = 0;
+
+function openLightbox(index) {
+    if (!lightbox || !lightboxImg || !lightboxCaption) return;
+    currentImageIndex = index;
+    updateLightboxContent();
+    lastFocusedElement = document.activeElement;
+    lightbox.style.display = 'block';
+    setAriaOpen(lightbox, true);
+    document.documentElement.classList.add('modal-open');
+    trapFocus(lightbox);
+}
+
+function closeLightbox() {
+    if (!lightbox) return;
+    lightbox.style.display = 'none';
+    setAriaOpen(lightbox, false);
+    document.documentElement.classList.remove('modal-open');
+    releaseFocus(lightbox);
+}
+
+function updateLightboxContent() {
+    if (currentImageIndex < 0) currentImageIndex = galleryItems.length - 1;
+    if (currentImageIndex >= galleryItems.length) currentImageIndex = 0;
+
+    const item = galleryItems[currentImageIndex];
+    const img = item.querySelector('img');
+    const caption = item.querySelector('figcaption');
+
+    if (lightboxImg) lightboxImg.src = img.src;
+    if (lightboxCaption) lightboxCaption.textContent = caption.textContent;
+}
+
+function nextImage() {
+    currentImageIndex++;
+    updateLightboxContent();
+}
+
+function prevImage() {
+    currentImageIndex--;
+    updateLightboxContent();
+}
+
+// --- Blog Modal (FIXED) ---
+const blogModal = document.getElementById('blog-modal');
+const blogModalTitle = document.getElementById('blog-modal-title');
+const blogModalImage = document.getElementById('blog-modal-image');
+const blogModalMeta = document.getElementById('blog-modal-meta');
+const blogModalBody = document.getElementById('blog-modal-body');
+
+function showBlogModal(id) {
+    const post = blogsData[id];
+    if (!post || !blogModal) return;
+
+    if (blogModalTitle) blogModalTitle.textContent = post.title;
+    if (blogModalImage) blogModalImage.src = post.image;
+    if (blogModalMeta) blogModalMeta.innerHTML = `
+        <span><i class="far fa-calendar"></i> ${post.date}</span>
+        <span><i class="far fa-user"></i> By ${post.author}</span>
     `;
-    document.body.appendChild(modal);
-    return modal;
+    if (blogModalBody) blogModalBody.innerHTML = post.content;
+    
+    lastFocusedElement = document.activeElement;
+    blogModal.classList.add('active');
+    setAriaOpen(blogModal, true);
+    document.documentElement.classList.add('modal-open');
+    trapFocus(blogModal);
 }
 
-function showOrderModal(product) {
-    const orderModal = document.querySelector('.order-modal') || createOrderModal();
+function hideBlogModal() {
+    if (!blogModal) return;
+    blogModal.classList.remove('active');
+    setAriaOpen(blogModal, false);
+    document.documentElement.classList.remove('modal-open');
+    releaseFocus(blogModal);
+}
+
+// --- Order Modal (FIXED) ---
+const orderModal = document.getElementById('order-modal');
+const orderModalTitle = document.getElementById('order-modal-title');
+const orderSummaryProduct = document.getElementById('order-summary-product');
+const orderSummaryPrice = document.getElementById('order-summary-price');
+const orderSummaryTotal = document.getElementById('order-summary-total');
+
+function showOrderModal(id) {
+    const product = productsData[id];
+    if (!product || !orderModal) return;
+
+    if (orderModalTitle) orderModalTitle.textContent = `Order: ${product.title}`;
+    if (orderSummaryProduct) orderSummaryProduct.textContent = product.title;
+    if (orderSummaryPrice) orderSummaryPrice.textContent = product.price;
+    if (orderSummaryTotal) orderSummaryTotal.textContent = product.price;
+
+    lastFocusedElement = document.activeElement;
     orderModal.classList.add('active');
-    document.body.style.overflow = 'hidden';
+    setAriaOpen(orderModal, true);
+    document.documentElement.classList.add('modal-open');
+    trapFocus(orderModal);
+}
 
-    // Update order summary
-    orderModal.querySelector('.product-name').textContent = product.title;
-    orderModal.querySelector('.product-price').textContent = product.price;
-    orderModal.querySelector('.total-price').textContent = product.price;
+function hideOrderModal() {
+    if (!orderModal) return;
+    orderModal.classList.remove('active');
+    setAriaOpen(orderModal, false);
+    document.documentElement.classList.remove('modal-open');
+    releaseFocus(orderModal);
+    // Optional: Reset form
+    document.getElementById('order-form')?.reset();
+}
 
-    // Add event listeners
-    const closeBtn = orderModal.querySelector('.close');
-    const form = orderModal.querySelector('form');
-    const orderContent = orderModal.querySelector('.order-content');
 
-    // Close on clicking outside
-    orderModal.addEventListener('click', (e) => {
-        if (e.target === orderModal) {
-            orderModal.classList.remove('active');
-            document.body.style.overflow = '';
+// --- Testimonials Carousel ---
+const testimonials = document.querySelectorAll('.testimonial');
+let currentTestimonial = 0;
+
+function showTestimonial(index) {
+    if (!testimonials.length) return;
+    testimonials.forEach((testimonial, i) => {
+        testimonial.classList.remove('active');
+        if (i === index) {
+            testimonial.classList.add('active');
+        }
+    });
+}
+
+function nextTestimonial() {
+    if (!testimonials.length) return;
+    currentTestimonial = (currentTestimonial + 1) % testimonials.length;
+    showTestimonial(currentTestimonial);
+}
+
+// Initial display
+if (testimonials.length) {
+    showTestimonial(currentTestimonial);
+    // Change testimonial every 6 seconds
+    setInterval(nextTestimonial, 6000);
+}
+
+
+// --- Back to Top Button (FIXED) ---
+const backToTopBtn = document.getElementById('back-to-top');
+
+if (backToTopBtn) {
+    window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 300) {
+            backToTopBtn.style.display = 'block';
+        } else {
+            backToTopBtn.style.display = 'none';
         }
     });
 
-    closeBtn.addEventListener('click', () => {
-        orderModal.classList.remove('active');
-        document.body.style.overflow = '';
-    });
-
-    form.addEventListener('submit', (e) => {
+    backToTopBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        // Add your order processing logic here
-        alert('Order placed successfully!');
-        orderModal.classList.remove('active');
-        document.body.style.overflow = '';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 }
 
-// Update product click handlers
-document.querySelectorAll('.product .btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const productId = btn.closest('.product').dataset.productId;
-        showOrderModal(productsData[productId]);
-    });
-});
-
-// Update product click handlers
-document.querySelectorAll('.product').forEach(product => {
-    const productId = product.dataset.productId;
-    const productImg = product.querySelector('img');
-    const buyBtn = product.querySelector('.btn');
-
-    // Make the whole product card and image clickable
-    [productImg, buyBtn].forEach(element => {
-        element.addEventListener('click', (e) => {
+// --- DOMContentLoaded: Attach all dynamic listeners ---
+document.addEventListener('DOMContentLoaded', () => {
+    
+    // Delegated click handler for modals
+    document.body.addEventListener('click', (e) => {
+        const trigger = e.target.closest('[data-modal-id][data-section]');
+        if (trigger) {
             e.preventDefault();
-            showOrderModal(productsData[productId]);
+            const id = trigger.getAttribute('data-modal-id');
+            const section = trigger.getAttribute('data-section');
+            
+            if (section === 'service') {
+                openServiceCardModal(id);
+            } else if (section === 'blog') {
+                showBlogModal(id);
+            } else if (section === 'store') {
+                showOrderModal(id);
+            }
+        }
+    });
+
+    // Gallery Lightbox listeners
+    galleryItems.forEach((item, index) => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            openLightbox(index);
+        });
+        // Add keyboard accessibility
+        item.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                openLightbox(index);
+            }
         });
     });
-});
 
-// Back to Top Button Functionality
-const backToTopButton = document.getElementById('back-to-top');
+    document.querySelector('.close-lightbox')?.addEventListener('click', closeLightbox);
+    document.getElementById('prev-btn')?.addEventListener('click', prevImage);
+    document.getElementById('next-btn')?.addEventListener('click', nextImage);
 
-window.addEventListener('scroll', () => {
-    if (window.pageYOffset > 300) {
-        backToTopButton.style.display = 'block';
-    } else {
-        backToTopButton.style.display = 'none';
+    // Blog Modal listeners
+    document.querySelector('.blog-modal .close')?.addEventListener('click', hideBlogModal);
+    document.getElementById('blog-modal')?.addEventListener('click', (e) => {
+        if (e.target.id === 'blog-modal') hideBlogModal();
+    });
+    document.querySelector('.blog-contact-btn')?.addEventListener('click', () => {
+        hideBlogModal();
+        setTimeout(() => {
+            // UPDATED: Point to the new booking form
+            document.querySelector('#booking')?.scrollIntoView({ behavior: 'smooth' });
+        }, 200);
+    });
+
+
+    // Order Modal listeners
+    document.querySelector('.order-modal .close')?.addEventListener('click', hideOrderModal);
+    document.getElementById('order-modal')?.addEventListener('click', (e) => {
+        if (e.target.id === 'order-modal') hideOrderModal();
+    });
+    document.getElementById('order-form')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        // Add form submission logic here
+        alert('Thank you for your order!');
+        hideOrderModal();
+    });
+
+    // (NEW) Appointment Form listener
+    const appointmentForm = document.getElementById('appointment-form');
+    if (appointmentForm) {
+        appointmentForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Placeholder for real submission logic
+            alert('Thank you for your request! We will contact you shortly to confirm.');
+            appointmentForm.reset();
+        });
+    }
+
+    // Video Background
+    const video = document.querySelector('.hero-video');
+    if (video) {
+        video.classList.add('active');
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+            playPromise.catch(error => {
+                console.error("Video play failed, showing fallback:", error);
+                document.querySelector('.video-container').style.background = 'linear-gradient(135deg, #6c5ce7, #4cd1a5)';
+            });
+        }
     }
 });
-
-backToTopButton.addEventListener('click', () => {
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    });
-});
-
-// Blog Modal Functionality
-function showBlogModal(id) {
-    const blog = blogsData[id];
-    if (!blog) return;
-
-    const blogModal = document.createElement('div');
-    blogModal.className = 'blog-modal';
-    blogModal.innerHTML = `
-        <div class="blog-modal-content">
-            <span class="close">&times;</span>
-            <div class="blog-modal-header">
-                <img src="${blog.image}" alt="${blog.title}">
-                <h2 class="blog-modal-title">${blog.title}</h2>
-                <div class="blog-modal-meta">
-                    <span><i class="far fa-calendar"></i> ${blog.date || 'March 15, 2024'}</span>
-                    <span><i class="far fa-user"></i> ${blog.author || 'By Dr. Sarah Wilson'}</span>
-                </div>
-            </div>
-            <div class="blog-modal-body">
-                ${blog.content}
-            </div>
-            <div class="blog-modal-footer">
-                <button class="blog-contact-btn">Contact Us Now</button>
-            </div>
-        </div>
-    `;
-
-    document.body.appendChild(blogModal);
-    setTimeout(() => blogModal.classList.add('active'), 10);
-    document.body.style.overflow = 'hidden';
-
-    const closeModal = () => {
-        blogModal.classList.remove('active');
-        setTimeout(() => {
-            document.body.removeChild(blogModal);
-            document.body.style.overflow = '';
-        }, 300);
-    };
-
-    blogModal.querySelector('.close').addEventListener('click', closeModal);
-    blogModal.addEventListener('click', (e) => {
-        if (e.target === blogModal) closeModal();
-    });
-
-    blogModal.querySelector('.blog-contact-btn').addEventListener('click', () => {
-        closeModal();
-        setTimeout(() => {
-            document.querySelector('#contact').scrollIntoView({ behavior: 'smooth' });
-        }, 300);
-    });
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeModal();
-    });
-}
-
-// Update blog post click handlers
-document.querySelectorAll('[data-section="blog"]').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const id = btn.getAttribute('data-modal-id');
-        showBlogModal(id);
-    });
-});
-
-// Remove the Terms of Service and Privacy Policy modal functionality
